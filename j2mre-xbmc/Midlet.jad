@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+MIDlet-Vendor: Moez Bouhlel
+MIDlet-Version: 1.0
+MIDlet-1: XBMC, /icon.png, Midlet
+MicroEdition-Configuration: CLDC-1.0
+Created-By: 1.7.0_51 (Oracle Corporation)
+MIDlet-Icon: /icon.png
+MIDlet-Name: Midlet
+MicroEdition-Profile: MIDP-2.0
+
+MIDlet-Jar-URL: Midlet.jar
+MIDlet-Jar-Size:  3529
