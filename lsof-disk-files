@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+lsof 2> /dev/null | grep ' REG ' | grep -o "/.*" | while read line; do
+#	line=${line##* }
+#	grep "$line"   " txt " && continue
+#	line=$(grep  -o "$line" '/.*')
+	if [[ -f "$line" ]]; then
+		(df "$line" | grep "^/dev/") > /dev/null && \
+		echo $line
+	fi
+done 2> /dev/null

@@ -1,0 +1,96 @@
+#!/bin/bash
+# First Download and extract
+# https://developer.mozilla.org/media/developer.mozilla.org.tar.gz
+# to the current directory and buid the provided docker file as "https"
+# Note: Add your self to "docker" group
+MDN=developer.mozilla.org
+MDNIP=127.0.1.1
+CDN=developer.cdn.mozilla.net
+CDNIP=127.0.1.2
+
+https() {
+	echo -e "\e[1;32mExec:\e[;0m ${FUNCNAME[0]}($@)..."
+	docker inspect ${1} 2>/dev/null >/dev/null \
+		&& echo -e "\e[1;31mError:\e[;0m Docker instance'$1' already runnging" >&2 \
+		&& exit 1
+	docker run -d --name=$1 -v $PWD/$1/:/var/www/html/ \
+		-p ${2}:80:80 -p ${2}:443:443 https
+}
+httpsDown() {
+	echo -e "\e[1;32mExec:\e[;0m ${FUNCNAME[0]}($@)..."
+	docker kill $1 >/dev/null 2>/dev/null
+	docker rm $1 >/dev/null 2>/dev/null
+}
+
+clone() {
+	echo -e "\e[1;32mExec:\e[;0m ${FUNCNAME[0]}($@)..."
+	[ ! -e "${1}" ] && mkdir "${1}"
+	for f in $(cat ${1}.list); do
+		[ -e "${1}/$f" ] && continue
+		mkdir -p ${1}/$(dirname "$f");
+		echo -e "\e[1;32mGET:\e[;0m $f"
+		curl --silent "https://${1}/$f" > "${1}/$f"
+	done
+}
+
+generateList() {
+	echo -e "\e[1;32mExec:\e[;0m ${FUNCNAME[0]}($@)..."
+	find $1/ -name "*.html" | while read d; do
+	grep -oE "(href|src)=\"https?://${2}/[^\"]*\"" "$d" 2>/dev/null \
+		| sed "s,\(href\|src\)=\"https\?://${2}\(\/[^#?]*\).*\"$,\2," \
+		| sort \
+		| uniq
+	done | sort | uniq > ${2}.list
+}
+cleanList() {
+	echo -e "\e[1;32mExec:\e[;0m ${FUNCNAME[0]}($@)..."
+	sed -i "/^[^\/]/d" ${1}.list
+	sed -i "/.zip$/d" ${1}.list
+	sed -i "/.mp4$/d" ${1}.list
+	sed -i "/^\/media\/uploads\/demos\//d" ${1}.list
+	sed -i "/\/$/d" ${1}.list
+	sed -i "/\/products\/download.html/d" ${1}.list
+	sed -i "/^\/-/d" ${1}.list
+	sed -i "/ /d" ${1}.list
+}
+
+cleanMDN() {
+	echo -e "\e[1;32mExec:\e[;0m ${FUNCNAME[0]}($@)..."
+	rm -r $MDN/{@api,en-US/{dashboards,@api}} 2>/dev/null
+	find $MDN -type d -name "*\$revision" -prune -exec rm -r '{}' \;
+	find $MDN -type f -name "*\$locales.html" -delete
+}
+
+hostsAdd() {
+	echo -e "\e[1;32mExec:\e[;0m ${FUNCNAME[0]}($@)..."
+	echo "$MDNIP $MDN" | sudo tee -a /etc/hosts >/dev/null
+	echo "$CDNIP $CDN" | sudo tee -a /etc/hosts >/dev/null
+}
+hostsClean() {
+	echo -e "\e[1;32mExec:\e[;0m ${FUNCNAME[0]}($@)..."
+	sudo sed -i "/$MDNIP $MDN/d" /etc/hosts
+	sudo sed -i "/$CDNIP $CDN/d" /etc/hosts
+}
+_exit() {
+	httpsDown $MDN
+	httpsDown $CDN
+	hostsClean
+}
+
+trap _exit HUP TERM
+
+
+if [ ! -e $CDN ]; then
+	# First run
+	cleanMDN
+	generateList $MDN $CDN
+	cleanList $CDN
+	clone $CDN
+fi
+# Lanch
+https $MDN $MDNIP
+https $CDN $CDNIP
+hostsAdd
+echo -e "\e[1;32mMain Server Logs\e[;0m"
+docker logs -f $MDN
+_exit
