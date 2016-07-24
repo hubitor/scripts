@@ -3,14 +3,14 @@ sudo yaourt -Syu --noconfirm --ignore=squid --ignore=linux --force
 yaourt -Su --noconfirm      # linux & squid
 # yaourt -S --noconfirm     apps.....
 # yaourt -Syu -a --devel --noconfirm
-sudo abs -t
+sudo abs || sudo abs -t
 
 vim -c "execute \"PluginInstall!\" | qa"
 
-pacman --root /opt/arch64 -Syu --noconfirm --force
-pacman --root /opt/arch32 --config /opt/arch32/etc/pacman.conf --dbpath /opt/arch32/var/lib/pacman/ -Syu --noconfirm --force
+sudo pacman --root /opt/arch64 -Syu --noconfirm --force
+sudo pacman --root /opt/arch32 --config /opt/arch32/etc/pacman.conf --dbpath /opt/arch32/var/lib/pacman/ -Syu --noconfirm --force
 yaourt --root /opt/arch64 -Syu --devel -a --noconfirm
-pacman --root /opt/arch32 --config /opt/arch32/etc/pacman.conf --dbpath /opt/arch32/var/lib/pacman/ -Syu --devel -a --noconfirm
+yaourt --root /opt/arch32 --config /opt/arch32/etc/pacman.conf --dbpath /opt/arch32/var/lib/pacman/ -Syu --devel -a --noconfirm
 sudo schroot -c ubuntu -u root -- sh -c "apt-get update; apt-get dist-upgrade -y"
 
 # zeal UPDATE?
