@@ -1,25 +1,53 @@
 #!/bin/bash
+
+function log() {
+	echo -e "\e[7;35m${1}\e[;m"
+}
+
+log "Updating System PGKs"
 sudo yaourt -Syu --noconfirm --ignore=squid --ignore=linux --force
 yaourt -Su --noconfirm      # linux & squid
 # yaourt -S --noconfirm     apps.....
+
+# log "Updating System AURs"
 # yaourt -Syu -a --devel --noconfirm
+
+log "Updating ABS"
 sudo abs || sudo abs -t
 
+log "Updating VIM Plugins"
 vim -c "execute \"PluginInstall!\" | qa"
 
+log "Updating Arch64 PGKs"
 sudo pacman --root /opt/arch64 -Syu --noconfirm --force
+
+log "Updating Arch32 PGKs"
 sudo pacman --root /opt/arch32 --config /opt/arch32/etc/pacman.conf --dbpath /opt/arch32/var/lib/pacman/ -Syu --noconfirm --force
-yaourt --root /opt/arch64 -Syu --devel -a --noconfirm
-yaourt --root /opt/arch32 --config /opt/arch32/etc/pacman.conf --dbpath /opt/arch32/var/lib/pacman/ -Syu --devel -a --noconfirm
+
+log "Updating Arch64 AURs"
+schroot -c Arch64 -- yaourt -Syu --devel -a --noconfirm --force
+
+log "Updating Arch32 AURs"
+schroot -c Arch32 -- yaourt -Syu --devel -a --noconfirm --force
+
+log "Updating Ubuntu PGKs"
 sudo schroot -c ubuntu -u root -- sh -c "apt-get update; apt-get dist-upgrade -y"
 
 # zeal UPDATE?
 
+log "Updating Git/Hg Repos"
 mr -d /mnt/Others/git/ update
 
+log "Updating PIP 2"
 pip2 list --local --user --outdated | awk '{print $1}' | xargs -n1 pip2 install -U
+
+log "Updating PIP 3"
 pip3 list --local --user --outdated | awk '{print $1}' | xargs -n1 pip3 install -U
+
+log "Updating NPM"
 npm update -g
+
+log "Updating GEM"
 gem update
 #cpan
 
