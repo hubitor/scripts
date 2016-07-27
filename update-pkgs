@@ -10,7 +10,7 @@ yaourt -Su --noconfirm      # linux & squid
 # yaourt -S --noconfirm     apps.....
 
 # log "Updating System AURs"
-# yaourt -Syu -a --devel --noconfirm
+# PACMAN=pacman yaourt -Syu -a --devel --noconfirm
 
 log "Updating ABS"
 sudo abs || sudo abs -t
@@ -33,7 +33,6 @@ schroot -c Arch32 -- yaourt -Syu --devel -a --noconfirm --force
 log "Updating Ubuntu PGKs"
 sudo schroot -c ubuntu -u root -- sh -c "apt-get update; apt-get dist-upgrade -y"
 
-# zeal UPDATE?
 
 log "Updating Git/Hg Repos"
 mr -d /mnt/Others/git/ update
@@ -49,6 +48,10 @@ npm update -g
 
 log "Updating GEM"
 gem update
-#cpan
+
+log "Updating CPAN"
+cpan -u # -T
+
+# zeal
 
 # kiwix
