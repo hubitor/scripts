@@ -6,11 +6,25 @@ function log() {
 
 log "Updating System PGKs"
 sudo yaourt -Syu --noconfirm --ignore=squid --ignore=linux --force
-yaourt -Su --noconfirm      # linux & squid
-# yaourt -S --noconfirm     apps.....
+yaourt -Su --noconfirm --force      # linux & squid
+# yaourt -S  --noconfirm --force    ...
 
-# log "Updating System AURs"
-# PACMAN=pacman yaourt -Syu -a --devel --noconfirm
+log "Activating InSync"
+sudo systemctl start insync@${USERNAME}
+
+log "Download links"
+# aria2c -i ~/.local/share/update-pkgs/download.list -d ~/Downloads/ -j 10
+systemctl --user start aria2c.service
+
+log "Download Torrents"
+# transmission-daemon -f -c ~/Downloads -w ~/Downloads
+systemctl --user start transmission.service
+
+log "Updating Git/Hg Repos"
+mr -d /mnt/Others/git/ update
+
+#log "Updating System AURs"
+#PACMAN=pacman yaourt -Syu -a --devel --noconfirm
 
 log "Updating ABS"
 sudo abs || sudo abs -t
@@ -33,9 +47,11 @@ schroot -c Arch32 -- yaourt -Syu --devel -a --noconfirm --force
 log "Updating Ubuntu PGKs"
 sudo schroot -c ubuntu -u root -- sh -c "apt-get update; apt-get dist-upgrade -y"
 
+# zeal
 
-log "Updating Git/Hg Repos"
-mr -d /mnt/Others/git/ update
+# kiwix
+
+# ODrive
 
 log "Updating PIP 2"
 pip2 list --local --user --outdated | awk '{print $1}' | xargs -n1 pip2 install -U
@@ -51,7 +67,3 @@ gem update
 
 log "Updating CPAN"
 cpan -u # -T
-
-# zeal
-
-# kiwix
