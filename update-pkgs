@@ -10,7 +10,7 @@ yaourt -Su --noconfirm --force      # linux & squid
 # yaourt -S  --noconfirm --force    ...
 
 log "Activating InSync"
-sudo systemctl start insync@${USERNAME}
+sudo systemctl start insync@${USER}
 
 log "Download links"
 # aria2c -i ~/.local/share/update-pkgs/download.list -d ~/Downloads/ -j 10
@@ -23,8 +23,8 @@ systemctl --user start transmission.service
 log "Updating Git/Hg Repos"
 mr -d /mnt/Others/git/ update
 
-#log "Updating System AURs"
-#PACMAN=pacman yaourt -Syu -a --devel --noconfirm
+log "Updating System AURs"
+yaourt -Syu -a --devel --noconfirm
 
 log "Updating ABS"
 sudo abs || sudo abs -t
@@ -44,8 +44,8 @@ schroot -c Arch64 -- yaourt -Syu --devel -a --noconfirm --force
 log "Updating Arch32 AURs"
 schroot -c Arch32 -- yaourt -Syu --devel -a --noconfirm --force
 
-log "Updating Ubuntu PGKs"
-sudo schroot -c ubuntu -u root -- sh -c "apt-get update; apt-get dist-upgrade -y"
+# log "Updating Ubuntu PGKs"
+# sudo schroot -c ubuntu -u root -- sh -c "apt-get update; apt-get dist-upgrade -y"
 
 # zeal
 
@@ -67,3 +67,11 @@ gem update
 
 log "Updating CPAN"
 cpan -u # -T
+
+log "update pkgfile cache"
+sudo pkgfile -u
+
+log "Updating Docker"
+sudo systemctl start docker.service
+docker images --filter "dangling=false" --format "{{.Repository}}:{{.Tag}}" \
+	| xargs -L1 docker pull
