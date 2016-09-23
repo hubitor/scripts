@@ -5,9 +5,9 @@ function log() {
 }
 
 log "Updating System PGKs"
-sudo yaourt -Syu --noconfirm --ignore=squid --ignore=linux --force
-yaourt -Su --noconfirm --force      # linux & squid
-# yaourt -S  --noconfirm --force    ...
+sudo yaourt -Syu --noconfirm --force # --ignore=squid --ignore=linux
+#yaourt -Su --noconfirm --force      # linux & squid
+#yaourt -S  --noconfirm --force    ...
 
 log "Activating InSync"
 sudo systemctl start insync@${USER}
@@ -33,9 +33,11 @@ log "Updating VIM Plugins"
 vim -c "execute \"PluginInstall!\" | qa"
 
 log "Updating Arch64 PGKs"
+sudo mount LABEL=Arch64 /opt/arch64
 sudo pacman --root /opt/arch64 -Syu --noconfirm --force
 
 log "Updating Arch32 PGKs"
+sudo mount LABEL=Arch32 /opt/arch32
 sudo pacman --root /opt/arch32 --config /opt/arch32/etc/pacman.conf --dbpath /opt/arch32/var/lib/pacman/ -Syu --noconfirm --force
 
 log "Updating Arch64 AURs"
@@ -71,7 +73,7 @@ cpan -u # -T
 log "update pkgfile cache"
 sudo pkgfile -u
 
-log "Updating Docker"
-sudo systemctl start docker.service
-docker images --filter "dangling=false" --format "{{.Repository}}:{{.Tag}}" \
-	| xargs -L1 docker pull
+#log "Updating Docker"
+#sudo systemctl start docker.service
+#docker images --filter "dangling=false" --format "{{.Repository}}:{{.Tag}}" \
+#	| xargs -L1 docker pull
