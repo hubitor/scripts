@@ -13,11 +13,9 @@ log "Activating InSync"
 sudo systemctl start insync@${USER}
 
 log "Download links"
-# aria2c -i ~/.local/share/update-pkgs/download.list -d ~/Downloads/ -j 10
 systemctl --user start aria2c.service
 
 log "Download Torrents"
-# transmission-daemon -f -c ~/Downloads -w ~/Downloads
 systemctl --user start transmission.service
 
 log "Updating Git/Hg Repos"
@@ -27,7 +25,7 @@ log "Updating System AURs"
 yaourt -Syu -a --devel --noconfirm
 
 log "Updating ABS"
-sudo abs || sudo abs -t
+sudo abs 2>/dev/null || sudo abs -t
 
 log "Updating VIM Plugins"
 vim -c "execute \"PluginInstall!\" | qa"
@@ -56,10 +54,10 @@ schroot -c Arch32 -- yaourt -Syu --devel -a --noconfirm --force
 # ODrive
 
 log "Updating PIP 2"
-pip2 list --local --user --outdated | awk '{print $1}' | xargs -n1 pip2 install -U
+pip2 list --local --user --outdated | awk 'NR > 2 {print $1}' | xargs -n1 pip2 install -U
 
 log "Updating PIP 3"
-pip3 list --local --user --outdated | awk '{print $1}' | xargs -n1 pip3 install -U
+pip3 list --local --user --outdated | awk 'NR > 2 {print $1}' | xargs -n1 pip3 install -U
 
 log "Updating NPM"
 npm update -g
