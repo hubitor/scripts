@@ -65,8 +65,8 @@ npm update -g
 log "Updating GEM"
 gem update
 
-log "Updating CPAN"
-cpan -u # -T
+# log "Updating CPAN"
+# cpan -u # -T
 
 log "update pkgfile cache"
 sudo pkgfile -u
