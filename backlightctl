@@ -16,7 +16,7 @@ fi
 if [ -n "$_new" ]; then
 	new=$( printf "%d\n" $_new 2>/dev/null )
 	[ "$new" -gt "$max" ] && new=$max
-	[ "$new" -lt "1" ] && new=1
+	[ "$new" -lt "1" ] && new=10
 	echo $new | tee $backlight/brightness >/dev/null
 fi
 

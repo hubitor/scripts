@@ -4,8 +4,7 @@ from pprint import pprint
 import operator
 import sys
 
-MATERIALS = ["Multi", "Java", "Security", "Reparti", "Web", "Reseau", "AI",
-             "Algo", "IHM", "English", "French", "Log.Flow", "Comm"]
+MATERIALS = ["OCL", "XML", "Test.F"]
 TYPES = ["C", "TP", "TD"]
 REPEATS = ["Weekly", "Bi-Weekly", "Monthly"]
 DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa"]
@@ -59,39 +58,18 @@ class Material:
         return "{0.name:12}  {0.type:2}  {0.start:%H:%M}  {0.end:%H:%M}  "\
             "{0.repeat}".format(self)
 
+
 emploit = {
-    "Mo": [Material("Multi", "C", "D6", 8.15),
-           Material("Java", "C", "A10", 10.00),
-           Material("Security", "C", "A3", 11.45),
-           Material("Reparti", "TD", "P021", 14.00),
-           Material("Security", "TP", "Lab Info 2", 15.45)],
-    "Tu": [Material("Web", "TP", "Lab Info 2", 8.15),
-           Material("Web", "C", "A9", 10.00),
-           Material("Comm", "TD", "D6", 11.30),
-           [Material("Java", "TP", "Lab Info 2", 14.00, repeat="Bi-Weekly"),
-            Material("Multi", "TP", "Lab Info 4", 14.00, repeat="Bi-Weekly")],
-           [Material("Multi", "TP", "Lab Info 4", 15.45, repeat="Bi-Weekly"),
-            Material("Java", "TP", "Lab Info 2", 15.45, repeat="Bi-Weekly")]],
-    "We": [None,
-           Material("Log.Flow", "C", "A10", 9.45),
-           Material("AI", "C", "MI218", 11.45),
-           Material("AI", "TD", "S1101", 14.00),
-           Material("Algo", "TP", "Lab Info 3", 15.45)],
-    "Th": [Material("Reparti", "C", "A9", 8.15),
-           Material("IHM", "C", "MI218", 10.00),
-           Material("Reparti", "TD", "S1207", 11.45),
-           Material("Reseau", "C", "A9", 14.30),
-           Material("Reseau", "TD", "S1109", 16.15)],
-    "Fr": [Material("Log.Flow", "TD", "S1202", 8.15, repeat="Bi-Weekly"),
-           Material("IHM", "TP", "Lab Info 2", 10.00, repeat="Bi-Weekly"),
-           Material("English", "TD", "S1210", 11.30),
-           Material("French", "TD", "D8", 14.00),
-           Material("Algo", "TP", "Lab Info 5", 15.30)],
-    "Sa": [Material("Algo", "C", "S1110", 8.15),
-           None,
-           Material("Web", "TP", "Lab Info 2", 11.45),
-           None,
-           None],
+    "Mo": [
+        Material("OCL", "TD", "Lab Info 2", 10.00),
+        Material("XML", "C", "A2", 13.15, 16.15)],
+    "Tu": [
+        Material("OCL", "C", "Lab Info 2", 13.15, 16.15)],
+    "Fr": [
+        Material("Test.F", "C", "P021", 10.00),
+        Material("XML", "TD", "Lab Info 3", 14.00)],
+    "Sa": [
+        Material("Test.F", "TD", "1208", 10.30)],
 }
 
 timeline_txt = []
@@ -99,7 +77,8 @@ timeline_color = []
 for index, day in enumerate(DAYS):
     tl_txt = []
     tl_color = []
-    materials = filter(lambda m: type(m) in (Material, list), emploit[day])
+    materials = filter(lambda m: type(m) in (Material, list),
+                       emploit.get(day, []))
     materials = map(lambda m: m if type(m) == Material else m[0], materials)
     materials = sorted(materials, key=operator.attrgetter("start"))
     i = 0

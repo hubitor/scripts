@@ -5,7 +5,7 @@ function log() {
 }
 
 log "Updating System PGKs"
-sudo yaourt -Syu --noconfirm --force # --ignore=squid --ignore=linux
+sudo PACMAN="powerpill" yaourt -Syu --noconfirm --force # --ignore=squid --ignore=linux
 #yaourt -Su --noconfirm --force      # linux & squid
 #yaourt -S  --noconfirm --force    ...
 
@@ -28,7 +28,7 @@ log "Updating ABS"
 sudo abs 2>/dev/null || sudo abs -t
 
 log "Updating VIM Plugins"
-vim -c "execute \"PluginInstall!\" | qa"
+vim -c "execute \"PlugUpdate\" | qa"
 
 log "Updating Arch64 PGKs"
 sudo mount LABEL=Arch64 /opt/arch64
@@ -68,6 +68,9 @@ gem update
 # log "Updating CPAN"
 # cpan -u # -T
 
+log "Update Rust Compiler"
+rustup update
+
 log "update pkgfile cache"
 sudo pkgfile -u
 
@@ -75,3 +78,5 @@ sudo pkgfile -u
 #sudo systemctl start docker.service
 #docker images --filter "dangling=false" --format "{{.Repository}}:{{.Tag}}" \
 #	| xargs -L1 docker pull
+
+# update windows apps installer files
