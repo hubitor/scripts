@@ -53,20 +53,23 @@ schroot -c Arch32 -- yaourt -Syu --devel -a --noconfirm --force
 
 # ODrive
 
-log "Updating PIP 2"
+log "Updating Python PIP 2"
 pip2 list --local --user --outdated | awk 'NR > 2 {print $1}' | xargs -n1 pip2 install -U
 
-log "Updating PIP 3"
+log "Updating Python PIP 3"
 pip3 list --local --user --outdated | awk 'NR > 2 {print $1}' | xargs -n1 pip3 install -U
 
-log "Updating NPM"
+log "Updating Nodejs NPM"
 npm update -g
 
-log "Updating GEM"
+log "Updating Ruby GEM"
 gem update
 
 # log "Updating CPAN"
 # cpan -u # -T
+
+log "Updating PHP Composer"
+composer global update --optimize-autoloader
 
 log "Update Rust Compiler"
 rustup update
