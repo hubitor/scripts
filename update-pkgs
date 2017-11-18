@@ -32,17 +32,18 @@ vim -c "execute \"PlugUpdate\" | qa"
 
 log "Updating Arch64 PGKs"
 sudo mount LABEL=Arch64 /opt/arch64
-sudo pacman --root /opt/arch64 -Syu --noconfirm --force
+# sudo pacman --root /opt/arch64 -Syu --noconfirm --force
+sudo schroot -c Arch64 -- pacman -Syu --noconfirm --force
 
-log "Updating Arch32 PGKs"
-sudo mount LABEL=Arch32 /opt/arch32
-sudo pacman --root /opt/arch32 --config /opt/arch32/etc/pacman.conf --dbpath /opt/arch32/var/lib/pacman/ -Syu --noconfirm --force
+# log "Updating Arch32 PGKs"
+# sudo mount LABEL=Arch32 /opt/arch32
+# sudo pacman --root /opt/arch32 --config /opt/arch32/etc/pacman.conf --dbpath /opt/arch32/var/lib/pacman/ -Syu --noconfirm --force
 
 log "Updating Arch64 AURs"
 schroot -c Arch64 -- yaourt -Syu --devel -a --noconfirm --force
 
-log "Updating Arch32 AURs"
-schroot -c Arch32 -- yaourt -Syu --devel -a --noconfirm --force
+# log "Updating Arch32 AURs"
+# schroot -c Arch32 -- yaourt -Syu --devel -a --noconfirm --force
 
 # log "Updating Ubuntu PGKs"
 # sudo schroot -c ubuntu -u root -- sh -c "apt-get update; apt-get dist-upgrade -y"
@@ -61,6 +62,9 @@ pip3 list --local --user --outdated | awk 'NR > 2 {print $1}' | xargs -n1 pip3 i
 
 log "Updating Nodejs NPM"
 npm update -g
+
+log "Updating Nodejs YARN"
+yarn global upgrade
 
 log "Updating Ruby GEM"
 gem update
